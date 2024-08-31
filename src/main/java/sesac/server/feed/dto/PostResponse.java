@@ -1,6 +1,10 @@
 package sesac.server.feed.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import sesac.server.feed.entity.Post;
+import sesac.server.feed.entity.Reply;
+import sesac.server.user.entity.Student;
 
 public record PostResponse(
         Long id,
@@ -8,13 +12,27 @@ public record PostResponse(
         String title,
         String content,
         LocalDateTime createdAt,
-//        String[] hashTags,
+        List<String> hashtags,
         String imageUrl,
         Long likesCount,
-        Long replyCount
-//        String profileImage,
-//        Reply[] replies
+        Long replyCount,
+        String profileImage,
+        List<ReplyResponse> replies
 ) {
-
+    public PostResponse(Post post, List<ReplyResponse> replies) {
+        this(
+                post.getId(),
+                post.getUser().getStudent().getNickname(),
+                post.getTitle(),
+                post.getContent(),
+                post.getCreatedAt(),
+                post.getHashtags().stream().map(postHashtag -> postHashtag.getHashtag().getName()).toList(),
+                post.getImage(),
+                post.getLikesCount(),
+                post.getReplyCount(),
+                post.getUser().getStudent().getProfileImage(),
+                replies
+        );
+    }
 }
 
