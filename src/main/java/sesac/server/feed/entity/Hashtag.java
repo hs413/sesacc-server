@@ -25,9 +25,5 @@ public class Hashtag {
 
     @Column(nullable = false, unique = true)
     private String name;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private FeedType type;
 }
 
