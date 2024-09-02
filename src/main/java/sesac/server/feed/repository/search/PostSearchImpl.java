@@ -35,7 +35,8 @@ public class PostSearchImpl implements PostSearch {
                 .selectFrom(post)
                 .join(post.user, user)
                 .where(
-                        typeEq(request.postType())
+                        typeEq(type),
+                        titleLike(request.keyword())
                 )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -59,19 +60,20 @@ public class PostSearchImpl implements PostSearch {
         JPAQuery<Post> countQuery = queryFactory
                 .select(post)
                 .where(
-                        typeEq(request.postType())
+                        typeEq(request.postType()),
+                        titleLike(request.keyword())
                 )
                 .from(post);
 
         return PageableExecutionUtils.getPage(posts, pageable, countQuery::fetchCount);
     }
 
-//    private BooleanExpression usernameEq(String keyword) {
-//        return hasText(keyword) ? member.username.eq(username) : null;
-//    }
-
     private BooleanExpression typeEq(PostType type) {
         return type != null ? post.type.eq(type) : null;
+    }
+
+    private BooleanExpression titleLike(String keyword) {
+        return hasText(keyword) ? post.title.contains(keyword) : null;
     }
 
 //    private BooleanExpression ageGoe(Integer ageGoe) {
