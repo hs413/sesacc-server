@@ -127,6 +127,7 @@ public class PostService {
     }
 
     private boolean hasPermission(CustomPrincipal principal, Long userId) {
-        return principal.role().equals(UserRole.MANAGER) || userId == principal.id();
+        return principal.role().equals(UserRole.MANAGER.toString()) ||
+                principal.id().equals(userId);
     }
 }
