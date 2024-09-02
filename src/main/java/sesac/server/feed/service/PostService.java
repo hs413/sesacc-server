@@ -1,13 +1,9 @@
 package sesac.server.feed.service;
 
-import static sesac.server.feed.entity.QHashtag.hashtag;
-
 import jakarta.transaction.Transactional;
-import java.util.Arrays;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import sesac.server.auth.dto.CustomPrincipal;
@@ -86,7 +82,7 @@ public class PostService {
 
     }
 
-    public PostResponse getPost(Long postId) {
+    public PostResponse getPostDetail(Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new BaseException(PostErrorCode.NO_POST));
 
@@ -97,7 +93,7 @@ public class PostService {
         return new PostResponse(post, replies);
     }
 
-    public List<PostListResponse> getPosts(
+    public List<PostListResponse> getPostList(
             Pageable pageable,
             PostListRequest request,
             PostType type

@@ -1,7 +1,5 @@
 package sesac.server.feed.service;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
@@ -9,7 +7,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import lombok.extern.log4j.Log4j2;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,10 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.DataBinder;
-import org.springframework.validation.Validator;
-import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import sesac.server.campus.entity.Campus;
 import sesac.server.campus.entity.Course;
 import sesac.server.feed.dto.CreatePostRequest;
@@ -130,7 +123,8 @@ class PostServiceTest {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         PostListRequest request = new PostListRequest(null, null, null);
 
-        List<PostListResponse> list = postService.getPosts(pageable, request, request.postType());
+        List<PostListResponse> list = postService.getPostList(pageable, request,
+                request.postType());
         log.info("---------------- list {}", list);
     }
 

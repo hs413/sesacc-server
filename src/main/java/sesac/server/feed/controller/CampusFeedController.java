@@ -56,25 +56,25 @@ public class CampusFeedController {
     }
 
     @GetMapping("posts")
-    public ResponseEntity<List<PostListResponse>> posts(
+    public ResponseEntity<List<PostListResponse>> getPostList(
             Pageable pageable,
             @ModelAttribute PostListRequest request
     ) {
-        List<PostListResponse> posts = postService.getPosts(pageable, request, PostType.CAMPUS);
+        List<PostListResponse> posts = postService.getPostList(pageable, request, PostType.CAMPUS);
 
         return ResponseEntity.ok(posts);
     }
 
     @GetMapping("posts/{postId}")
-    public ResponseEntity<PostResponse> post(@PathVariable Long postId) {
-        PostResponse response = postService.getPost(postId);
+    public ResponseEntity<PostResponse> getPostDetail(@PathVariable Long postId) {
+        PostResponse response = postService.getPostDetail(postId);
 
         return ResponseEntity.ok().body(response);
     }
 
 
     @PutMapping("posts/{postId}")
-    public void updatePost(
+    public ResponseEntity<Void> updatePost(
             @AuthPrincipal CustomPrincipal principal,
             @PathVariable Long postId,
             @Valid @RequestBody UpdatePostRequest updatePostRequest,
@@ -86,10 +86,15 @@ public class CampusFeedController {
         ));
 
         postService.updatePost(principal, postId, updatePostRequest);
+
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("posts/{postId}")
-    public void deletePost(@AuthPrincipal CustomPrincipal principal, @PathVariable Long postId) {
+    public ResponseEntity<Void> deletePost(@AuthPrincipal CustomPrincipal principal,
+            @PathVariable Long postId) {
         postService.deletePost(principal, postId);
+
+        return ResponseEntity.noContent().build();
     }
 }
