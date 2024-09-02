@@ -45,20 +45,41 @@ class AccountServiceTest {
     @PersistenceContext
     EntityManager em;
 
-    private Long courseId;
+    private Course course;
 
     @BeforeEach
     public void setUp() {
-        em.persist(User.builder().email("test@example.com").password("1234").role(UserRole.STUDENT)
-                .build());
+        Campus campus = Campus.builder()
+                .name("Campus")
+                .address("campus address")
+                .build();
 
-        courseId = courseRepository.findAll().get(0).getId();
+        em.persist(campus);
+
+        course = Course.builder()
+                .campus(campus)
+                .name("Course")
+                .classNumber("course number")
+                .instructorName("instructor name")
+                .build();
+
+        em.persist(course);
+
+        User user = User.builder()
+                .email("test1@example.com")
+                .password("1234")
+                .role(UserRole.STUDENT)
+                .build();
+
+        em.persist(user);
+        em.flush();
+        em.clear();
     }
 
     @Test
     @DisplayName("이메일 중복 체크 통과")
     public void emailCheck1() {
-        accountService.checkEmail("test1@example.com");
+        accountService.checkEmail("test2@example.com");
     }
 
     @Test
@@ -66,7 +87,7 @@ class AccountServiceTest {
     public void emailCheck2() {
         AccountException ex =
                 assertThrows(AccountException.class,
-                        () -> accountService.checkEmail("test@example.com"));
+                        () -> accountService.checkEmail("test1@example.com"));
 
         assertThat(ex.getErrorCode()).isEqualTo(AccountErrorCode.DUPLICATED_EMAIL);
         assertThat(ex.getMessage()).isEqualTo(AccountErrorCode.DUPLICATED_EMAIL.getMessage());
@@ -76,13 +97,13 @@ class AccountServiceTest {
     @DisplayName("회원 가입 정상")
     public void signup1() {
         SignupRequest signupRequest = new SignupRequest(
-                "test1@example.com",
+                "test2@example.com",
                 "asdf1234!",
                 "asdf1234!",
                 "김학생",
                 "990101",
                 1,
-                courseId
+                course.getId()
         );
 
         Student created = accountService.createStudent(signupRequest);
@@ -93,7 +114,7 @@ class AccountServiceTest {
                 LocalDate.parse("19990101", DateTimeFormatter.ofPattern("yyyyMMdd")));
         assertThat(student.getName()).isEqualTo("김학생");
         assertThat(student.getGender()).isEqualTo('M');
-        assertThat(student.getUser().getEmail()).isEqualTo("test1@example.com");
+        assertThat(student.getUser().getEmail()).isEqualTo("test2@example.com");
         assertThat(passwordEncoder.matches("asdf1234!", student.getUser().getPassword())).isEqualTo(
                 true);
     }
@@ -102,13 +123,13 @@ class AccountServiceTest {
     @DisplayName("비밀번호 확인이 다른 경우")
     public void differentPasswordConfirm() {
         SignupRequest signupRequest = new SignupRequest(
-                "test1@example.com",
+                "test2@example.com",
                 "asdf1234!",
                 "asdf1234!2",
                 "김학생",
                 "990101",
                 1,
-                courseId
+                course.getId()
         );
 
         AccountException ex =
@@ -122,7 +143,7 @@ class AccountServiceTest {
     @DisplayName("과정이 없는 경우")
     public void noCourse() {
         SignupRequest signupRequest = new SignupRequest(
-                "test1@example.com",
+                "test2@example.com",
                 "asdf1234!",
                 "asdf1234!",
                 "김학생",
