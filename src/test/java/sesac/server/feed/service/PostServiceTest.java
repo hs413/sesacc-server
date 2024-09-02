@@ -24,6 +24,7 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import sesac.server.campus.entity.Campus;
 import sesac.server.campus.entity.Course;
 import sesac.server.feed.dto.CreatePostRequest;
+import sesac.server.feed.dto.PostListRequest;
 import sesac.server.feed.dto.PostListResponse;
 import sesac.server.user.entity.Student;
 import sesac.server.user.entity.User;
@@ -127,8 +128,9 @@ class PostServiceTest {
         int pageNumber = 0;
         int pageSize = 10;
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        PostListRequest request = new PostListRequest(null, null, null);
 
-        List<PostListResponse> list = postService.getPosts(pageable);
+        List<PostListResponse> list = postService.getPosts(pageable, request, request.postType());
         log.info("---------------- list {}", list);
     }
 
