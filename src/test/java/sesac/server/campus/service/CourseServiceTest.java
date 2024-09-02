@@ -15,6 +15,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import sesac.server.campus.dto.CourseResponse;
 import sesac.server.campus.entity.Campus;
 import sesac.server.campus.entity.Course;
+import sesac.server.campus.repository.CampusRepository;
+import sesac.server.campus.repository.CourseRepository;
 
 @Log4j2
 @SpringBootTest
@@ -27,36 +29,23 @@ class CourseServiceTest {
     @Autowired
     private CourseService courseService;
 
-    private Long campus1Id;
-    private Long campus2Id;
+    @Autowired
+    private CampusRepository campusRepository;
+
+    private Long campusId;
 
     @BeforeEach
     public void before() {
-        Campus campus1 = Campus.builder().name("영등포 캠퍼스").build();
-        Campus campus2 = Campus.builder().name("금천 캠퍼스").build();
-        em.persist(campus1);
-        em.persist(campus2);
-        campus1Id = campus1.getId();
-        campus2Id = campus2.getId();
-
-        em.persist(Course.builder().classNumber("1").name("영등포 자바").instructorName("김선생")
-                .campus(campus1).build());
-        em.persist(Course.builder().classNumber("2").name("영등포 파이썬").instructorName("이선생")
-                .campus(campus1).build());
-        em.persist(Course.builder().classNumber("3").name("금천 자바").instructorName("박선생")
-                .campus(campus2).build());
-        em.persist(Course.builder().classNumber("4").name("금천 파이썬").instructorName("최선생")
-                .campus(campus2).build());
-
+        campusId = campusRepository.findAll().get(0).getId();
     }
 
     @Test
     @DisplayName("전체 조회 테스트")
     public void findAll() {
-        List<CourseResponse> list = courseService.findAll(campus1Id);
+        List<CourseResponse> list = courseService.findAll(campusId);
 
         list.forEach(log::info);
         assertThat(list).isNotEmpty();
-        assertThat(list).hasSize(2);
+        assertThat(list).hasSize(3);
     }
 }

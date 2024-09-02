@@ -26,13 +26,6 @@ class CampusServiceTest {
     @Autowired
     private CampusService campusService;
 
-    @BeforeEach
-    public void before() {
-        em.persist(Campus.builder().name("영등포 캠퍼스").build());
-        em.persist(Campus.builder().name("금천 캠퍼스").build());
-        em.persist(Campus.builder().name("동대문 캠퍼스").build());
-    }
-
     @Test
     @DisplayName("전체 조회 테스트")
     public void findAll() {
