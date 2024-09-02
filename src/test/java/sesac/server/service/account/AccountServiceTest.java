@@ -21,6 +21,7 @@ import sesac.server.account.exception.AccountException;
 import sesac.server.account.service.AccountService;
 import sesac.server.campus.entity.Campus;
 import sesac.server.campus.entity.Course;
+import sesac.server.campus.repository.CourseRepository;
 import sesac.server.user.entity.Student;
 import sesac.server.user.entity.User;
 import sesac.server.user.entity.UserRole;
@@ -37,6 +38,8 @@ class AccountServiceTest {
     @Autowired
     private StudentRepository studentRepository;
     @Autowired
+    private CourseRepository courseRepository;
+    @Autowired
     PasswordEncoder passwordEncoder;
 
     @PersistenceContext
@@ -49,13 +52,7 @@ class AccountServiceTest {
         em.persist(User.builder().email("test@example.com").password("1234").role(UserRole.STUDENT)
                 .build());
 
-        Campus campus = Campus.builder().name("영등포 캠퍼스").address("영등포").build();
-        em.persist(campus);
-
-        Course course = Course.builder().name("영등포 자바").instructorName("김자바").classNumber("1")
-                .campus(campus).build();
-        em.persist(course);
-        courseId = course.getId();
+        courseId = courseRepository.findAll().get(0).getId();
     }
 
     @Test
@@ -108,7 +105,7 @@ class AccountServiceTest {
                 "test1@example.com",
                 "asdf1234!",
                 "asdf1234!2",
-                "김학생f",
+                "김학생",
                 "990101",
                 1,
                 courseId
