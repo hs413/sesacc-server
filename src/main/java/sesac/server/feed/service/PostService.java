@@ -40,7 +40,7 @@ public class PostService {
     private final HashtagRepository hashtagRepository;
     private final PostHashtagRepository postHashtagRepository;
 
-    public void createPost(Long userId, CreatePostRequest request) {
+    public Post createPost(Long userId, CreatePostRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new TokenException(TokenErrorCode.UNACCEPT));
 
@@ -79,7 +79,7 @@ public class PostService {
 
         postHashtagRepository.saveAll(postHashtags);
 
-
+        return post;
     }
 
     public PostResponse getPostDetail(Long postId) {

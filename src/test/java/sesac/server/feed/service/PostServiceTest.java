@@ -1,5 +1,7 @@
 package sesac.server.feed.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
@@ -19,6 +21,9 @@ import sesac.server.campus.entity.Course;
 import sesac.server.feed.dto.CreatePostRequest;
 import sesac.server.feed.dto.PostListRequest;
 import sesac.server.feed.dto.PostListResponse;
+import sesac.server.feed.dto.PostResponse;
+import sesac.server.feed.entity.Post;
+import sesac.server.feed.entity.PostType;
 import sesac.server.user.entity.Student;
 import sesac.server.user.entity.User;
 import sesac.server.user.entity.UserRole;
@@ -34,7 +39,7 @@ class PostServiceTest {
     @PersistenceContext
     EntityManager em;
 
-    Student student;
+    Student student1;
     Student student2;
 
     @BeforeEach
@@ -56,14 +61,14 @@ class PostServiceTest {
         em.persist(course);
 
         User user = User.builder()
-                .email("test@example.com")
+                .email("test1@example.com")
                 .password("1234")
                 .role(UserRole.STUDENT)
                 .build();
 
         em.persist(user);
 
-        student = Student.builder()
+        student1 = Student.builder()
                 .user(user)
                 .name("김학생")
                 .birthDate(LocalDate.parse("19990101", DateTimeFormatter.ofPattern("yyyyMMdd")))
@@ -73,10 +78,10 @@ class PostServiceTest {
                 .statusCode(10)
                 .build();
 
-        em.persist(student);
+        em.persist(student1);
 
         User user2 = User.builder()
-                .email("test1@example.com")
+                .email("test2@example.com")
                 .password("1234")
                 .role(UserRole.STUDENT)
                 .build();
@@ -99,33 +104,86 @@ class PostServiceTest {
 
 
     @Test
-    @DisplayName("피드 생성")
+    @DisplayName("게시글 작성")
     public void createPostTest() {
-        CreatePostRequest request = new CreatePostRequest("제목", "내용", null, null);
+        CreatePostRequest request = new CreatePostRequest("제목", "내용", List.of("해시1", "해시2"), null);
 
-        postService.createPost(student.getId(), request);
+        Post created = postService.createPost(student1.getId(), request);
+        em.flush();
+        em.clear();
+
+        PostResponse post = postService.getPostDetail(created.getId());
+
+        assertThat(post.title()).isEqualTo("제목");
+        assertThat(post.content()).isEqualTo("내용");
+        assertThat(post.hashtags()).hasSize(2);
     }
 
     @Test
-    @DisplayName("피드 목록")
-    public void postListTest() {
-        CreatePostRequest request1 = new CreatePostRequest("제목1", "내용1", null, null);
-        CreatePostRequest request2 = new CreatePostRequest("제목2", "내용2", null, null);
-        CreatePostRequest request3 = new CreatePostRequest("제목3", "내용3", null, null);
+    @DisplayName("중복 해시코드")
+    public void hashcodeTest() {
+        CreatePostRequest request1 = new CreatePostRequest("제목", "내용", List.of("해시1", "해시2"), null);
+        CreatePostRequest request2 = new CreatePostRequest("제목", "내용", List.of("해시1", "해시2", "해시3"),
+                null);
 
-        postService.createPost(student.getId(), request1);
-        postService.createPost(student.getId(), request2);
-        postService.createPost(student2.getId(), request3);
+        Post created1 = postService.createPost(student1.getId(), request1);
+        Post created2 = postService.createPost(student1.getId(), request2);
         em.flush();
         em.clear();
-        int pageNumber = 0;
-        int pageSize = 10;
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
+        PostResponse post1 = postService.getPostDetail(created1.getId());
+        PostResponse post2 = postService.getPostDetail(created2.getId());
+
+        assertThat(post1.hashtags()).hasSize(2);
+        assertThat(post2.hashtags()).hasSize(3);
+    }
+
+
+    @Test
+    @DisplayName("게시글 목록")
+    public void postListTest() {
+        for (int i = 1; i <= 27; i++) {
+            Student student = i % 2 == 0 ? student1 : student2;
+            Post post = Post.builder()
+                    .title("제목_" + i)
+                    .content("내용_" + i)
+                    .type(PostType.CAMPUS)
+                    .user(student.getUser())
+                    .build();
+
+            em.persist(post);
+        }
+
+        em.flush();
+        em.clear();
+
+        Pageable pageable = PageRequest.of(0, 10);
         PostListRequest request = new PostListRequest(null, null, null);
 
-        List<PostListResponse> list = postService.getPostList(pageable, request,
-                request.postType());
-        log.info("---------------- list {}", list);
+        List<PostListResponse> list = postService.getPostList(pageable, request, null);
+
+        assertThat(list).hasSize(10);
+
+        for (PostListResponse post : list) {
+            log.info(post);
+        }
     }
+
+    @Test
+    @DisplayName("게시글 상세")
+    public void postDetailTest() {
+        Post created = Post.builder()
+                .title("제목")
+                .content("내용")
+                .type(PostType.CAMPUS)
+                .user(student1.getUser())
+                .build();
+
+        em.persist(created);
+
+        PostResponse post = postService.getPostDetail(created.getId());
+        log.info(post);
+    }
+
 
 }
