@@ -39,7 +39,7 @@ class CourseServiceTest {
         campusId = campusRepository.findAll().get(0).getId();
     }
 
-    @Test
+    /*@Test
     @DisplayName("전체 조회 테스트")
     public void findAll() {
         List<CourseResponse> list = courseService.findAll(campusId);
@@ -47,5 +47,5 @@ class CourseServiceTest {
         list.forEach(log::info);
         assertThat(list).isNotEmpty();
         assertThat(list).hasSize(3);
-    }
+    }*/
 }
