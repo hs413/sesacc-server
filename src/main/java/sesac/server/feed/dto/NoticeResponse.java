@@ -22,7 +22,7 @@ public record NoticeResponse(
     public NoticeResponse(Notice notice/*, List<ReplyResponse> replies*/) {
         this(
                 notice.getId(),
-                notice.getUser().getStudent().getNickname(),
+                notice.getUser().getManager().getCampusName(),
                 notice.getTitle(),
                 notice.getContent(),
                 notice.getCreatedAt(),
@@ -31,7 +31,7 @@ public record NoticeResponse(
                 notice.getImage(),
                 notice.getLikesCount(),
                 notice.getReplyCount(),
-                notice.getUser().getStudent().getProfileImage()
+                notice.getUser().getManager().getProfileImage()
 //                replies
         );
     }

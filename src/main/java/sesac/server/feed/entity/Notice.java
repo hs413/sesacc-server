@@ -65,6 +65,7 @@ public class Notice extends BaseEntity {
     private Long replyCount;
 
     @OneToMany(mappedBy = "notice")
+    @Builder.Default
     private List<PostHashtag> hashtags = new ArrayList<>();
 
     public void update(UpdateNoticeRequest request) {
@@ -74,6 +75,14 @@ public class Notice extends BaseEntity {
 
         if (hasText(request.content())) {
             content = request.content();
+        }
+
+        if (request.importance() != null) {
+            importance = request.importance();
+        }
+
+        if (request.type() != null) {
+            type = request.type();
         }
 
     }

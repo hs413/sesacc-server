@@ -22,7 +22,7 @@ public record NoticeListResponse(
     public NoticeListResponse(Notice notice) {
         this(
                 notice.getId(),
-                notice.getUser().getStudent().getNickname(),
+                notice.getUser().getManager().getCampusName(),
                 notice.getTitle(),
                 notice.getContent(),
                 notice.getCreatedAt(),

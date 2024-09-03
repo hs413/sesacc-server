@@ -37,4 +37,7 @@ public class User extends BaseEntity {
 
     @OneToOne(mappedBy = "user")
     private Student student;
+
+    @OneToOne(mappedBy = "user")
+    private Manager manager;
 }
