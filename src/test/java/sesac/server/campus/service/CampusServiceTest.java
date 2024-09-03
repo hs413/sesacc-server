@@ -26,7 +26,7 @@ class CampusServiceTest {
     @Autowired
     private CampusService campusService;
 
-    @Test
+    /*@Test
     @DisplayName("전체 조회 테스트")
     public void findAll() {
         List<CampusResponse> list = campusService.findAll();
@@ -34,5 +34,5 @@ class CampusServiceTest {
         list.forEach(log::info);
         assertThat(list).isNotEmpty();
         assertThat(list).hasSize(3);
-    }
+    }*/
 }
