@@ -11,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import sesac.server.common.DtoTest;
 import sesac.server.common.exception.BaseException;
 import sesac.server.common.exception.ErrorCode;
+import sesac.server.feed.dto.request.CreatePostRequest;
 import sesac.server.feed.exception.PostErrorCode;
 
 @Log4j2

@@ -12,11 +12,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
-import sesac.server.feed.dto.NoticeListRequest;
-import sesac.server.feed.dto.NoticeListResponse;
+import sesac.server.feed.dto.request.NoticeListRequest;
+import sesac.server.feed.dto.response.NoticeListResponse;
 import sesac.server.feed.entity.Notice;
 import sesac.server.feed.entity.NoticeType;
-import sesac.server.feed.entity.QNotice;
 
 @RequiredArgsConstructor
 public class NoticeSearchImpl implements NoticeSearch {

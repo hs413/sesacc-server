@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import sesac.server.feed.dto.PostListRequest;
-import sesac.server.feed.dto.PostListResponse;
-import sesac.server.feed.dto.PostResponse;
+import sesac.server.feed.dto.request.PostListRequest;
+import sesac.server.feed.dto.response.PostListResponse;
+import sesac.server.feed.dto.response.PostResponse;
 import sesac.server.manager.service.ManagerPostService;
 
 @Log4j2
@@ -27,7 +27,6 @@ public class ManagerPostController {
     @GetMapping
     public ResponseEntity<Page<PostListResponse>> postList(
             @ModelAttribute PostListRequest request,
-//            @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable
             Pageable pageable
     ) {
         Page<PostListResponse> responses =

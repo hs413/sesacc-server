@@ -1,6 +1,10 @@
 package sesac.server.manager.controller;
 
-import static sesac.server.feed.exception.PostErrorCode.*;
+import static sesac.server.feed.exception.PostErrorCode.INVALID_CONTENT_SIZE;
+import static sesac.server.feed.exception.PostErrorCode.INVALID_TITLE_SIZE;
+import static sesac.server.feed.exception.PostErrorCode.REQUIRED_CONTENT;
+import static sesac.server.feed.exception.PostErrorCode.REQUIRED_NOTICE_TYPE;
+import static sesac.server.feed.exception.PostErrorCode.REQUIRED_TITLE;
 
 import jakarta.validation.Valid;
 import java.util.List;
@@ -22,14 +26,11 @@ import org.springframework.web.bind.annotation.RestController;
 import sesac.server.auth.dto.AuthPrincipal;
 import sesac.server.auth.dto.CustomPrincipal;
 import sesac.server.common.exception.BindingResultHandler;
-import sesac.server.feed.dto.CreateNoticeRequest;
-import sesac.server.feed.dto.NoticeListRequest;
-import sesac.server.feed.dto.NoticeListResponse;
-import sesac.server.feed.dto.NoticeResponse;
-import sesac.server.feed.dto.PostListRequest;
-import sesac.server.feed.dto.UpdateNoticeRequest;
-import sesac.server.feed.entity.Notice;
-import sesac.server.feed.exception.PostErrorCode;
+import sesac.server.feed.dto.request.CreateNoticeRequest;
+import sesac.server.feed.dto.request.NoticeListRequest;
+import sesac.server.feed.dto.request.UpdateNoticeRequest;
+import sesac.server.feed.dto.response.NoticeListResponse;
+import sesac.server.feed.dto.response.NoticeResponse;
 import sesac.server.manager.service.ManagerNoticeService;
 
 @Log4j2

@@ -26,7 +26,14 @@ class CampusServiceTest {
     @Autowired
     private CampusService campusService;
 
-    /*@Test
+    @BeforeEach
+    public void before() {
+        em.persist(Campus.builder().name("영등포 캠퍼스").address("영등포").build());
+        em.persist(Campus.builder().name("금천 캠퍼스").address("금천").build());
+        em.persist(Campus.builder().name("동대문 캠퍼스").address("동대문").build());
+    }
+
+    @Test
     @DisplayName("전체 조회 테스트")
     public void findAll() {
         List<CampusResponse> list = campusService.findAll();
@@ -34,5 +41,5 @@ class CampusServiceTest {
         list.forEach(log::info);
         assertThat(list).isNotEmpty();
         assertThat(list).hasSize(3);
-    }*/
+    }
 }

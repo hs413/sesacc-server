@@ -4,7 +4,6 @@ import static org.springframework.util.StringUtils.hasText;
 import static sesac.server.feed.entity.QPost.post;
 import static sesac.server.user.entity.QUser.user;
 
-import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -13,11 +12,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
-import org.springframework.util.StringUtils;
-import sesac.server.feed.dto.PostListRequest;
-import sesac.server.feed.dto.PostListResponse;
+import sesac.server.feed.dto.request.PostListRequest;
+import sesac.server.feed.dto.response.PostListResponse;
 import sesac.server.feed.entity.Post;
-import sesac.server.feed.entity.PostType;
+import sesac.server.feed.entity.FeedType;
 
 @RequiredArgsConstructor
 public class PostSearchImpl implements PostSearch {
@@ -28,7 +26,7 @@ public class PostSearchImpl implements PostSearch {
     public List<PostListResponse> searchPost(
             Pageable pageable,
             PostListRequest request,
-            PostType type
+            FeedType type
     ) {
 
         List<Post> postList = queryFactory
@@ -52,7 +50,7 @@ public class PostSearchImpl implements PostSearch {
     public Page<PostListResponse> searchPostPage(
             Pageable pageable,
             PostListRequest request,
-            PostType type
+            FeedType type
     ) {
 
         List<PostListResponse> posts = this.searchPost(pageable, request, type);
@@ -68,20 +66,11 @@ public class PostSearchImpl implements PostSearch {
         return PageableExecutionUtils.getPage(posts, pageable, countQuery::fetchCount);
     }
 
-    private BooleanExpression typeEq(PostType type) {
+    private BooleanExpression typeEq(FeedType type) {
         return type != null ? post.type.eq(type) : null;
     }
 
     private BooleanExpression titleLike(String keyword) {
         return hasText(keyword) ? post.title.contains(keyword) : null;
     }
-
-//    private BooleanExpression ageGoe(Integer ageGoe) {
-//        return ageGoe != null ? member.age.goe(ageGoe) : null;
-//    }
-//
-//    private BooleanExpression ageLoe(Integer ageLoe) {
-//        return ageLoe != null ? member.age.goe(ageLoe) : null;
-//    }
-
 }

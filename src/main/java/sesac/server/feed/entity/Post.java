@@ -21,7 +21,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Formula;
 import sesac.server.common.entity.BaseEntity;
-import sesac.server.feed.dto.UpdatePostRequest;
+import sesac.server.feed.dto.request.UpdatePostRequest;
 import sesac.server.user.entity.User;
 
 @Entity
@@ -51,7 +51,7 @@ public class Post extends BaseEntity {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private PostType type;
+    private FeedType type;
 
     @Formula("(SELECT COUNT(*) FROM likes l WHERE l.post_id = id AND l.type = 'POST')")
     private Long likesCount;

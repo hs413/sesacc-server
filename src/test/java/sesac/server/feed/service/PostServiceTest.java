@@ -6,12 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
-import java.security.Principal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import lombok.extern.log4j.Log4j2;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,13 +21,13 @@ import sesac.server.auth.dto.CustomPrincipal;
 import sesac.server.campus.entity.Campus;
 import sesac.server.campus.entity.Course;
 import sesac.server.common.exception.BaseException;
-import sesac.server.feed.dto.CreatePostRequest;
-import sesac.server.feed.dto.PostListRequest;
-import sesac.server.feed.dto.PostListResponse;
-import sesac.server.feed.dto.PostResponse;
-import sesac.server.feed.dto.UpdatePostRequest;
+import sesac.server.feed.dto.request.CreatePostRequest;
+import sesac.server.feed.dto.request.PostListRequest;
+import sesac.server.feed.dto.request.UpdatePostRequest;
+import sesac.server.feed.dto.response.PostListResponse;
+import sesac.server.feed.dto.response.PostResponse;
+import sesac.server.feed.entity.FeedType;
 import sesac.server.feed.entity.Post;
-import sesac.server.feed.entity.PostType;
 import sesac.server.feed.exception.PostErrorCode;
 import sesac.server.user.entity.Student;
 import sesac.server.user.entity.User;
@@ -117,7 +115,7 @@ class PostServiceTest {
         CreatePostRequest request = new CreatePostRequest("제목", "내용", List.of("해시1", "해시2"), null);
 
         // when
-        Post created = postService.createPost(student1.getId(), request);
+        Post created = postService.createPost(student1.getId(), FeedType.CAMPUS, request);
         em.flush();
         em.clear();
 
@@ -126,7 +124,7 @@ class PostServiceTest {
         assertThat(post.getTitle()).isEqualTo("제목");
         assertThat(post.getContent()).isEqualTo("내용");
         assertThat(post.getHashtags()).hasSize(2);
-        assertThat(post.getType()).isEqualTo(PostType.CAMPUS);
+        assertThat(post.getType()).isEqualTo(FeedType.CAMPUS);
     }
 
     @Test
@@ -138,8 +136,8 @@ class PostServiceTest {
                 null);
 
         // when
-        Post created1 = postService.createPost(student1.getId(), request1);
-        Post created2 = postService.createPost(student1.getId(), request2);
+        Post created1 = postService.createPost(student1.getId(), FeedType.CAMPUS, request1);
+        Post created2 = postService.createPost(student1.getId(), FeedType.CAMPUS, request2);
 
         em.flush();
         em.clear();
@@ -162,7 +160,7 @@ class PostServiceTest {
             Post post = Post.builder()
                     .title("제목_" + i)
                     .content("내용_" + i)
-                    .type(PostType.CAMPUS)
+                    .type(FeedType.CAMPUS)
                     .user(student.getUser())
                     .build();
 
@@ -195,7 +193,7 @@ class PostServiceTest {
         Post created = Post.builder()
                 .title("제목")
                 .content("내용")
-                .type(PostType.CAMPUS)
+                .type(FeedType.CAMPUS)
                 .user(student1.getUser())
                 .build();
 
@@ -219,7 +217,7 @@ class PostServiceTest {
         Post created = Post.builder()
                 .title("제목")
                 .content("내용")
-                .type(PostType.CAMPUS)
+                .type(FeedType.CAMPUS)
                 .user(student1.getUser())
                 .build();
 
@@ -246,7 +244,7 @@ class PostServiceTest {
         Post created = Post.builder()
                 .title("제목")
                 .content("내용")
-                .type(PostType.CAMPUS)
+                .type(FeedType.CAMPUS)
                 .user(student2.getUser())
                 .build();
 
@@ -272,7 +270,7 @@ class PostServiceTest {
         Post created = Post.builder()
                 .title("제목")
                 .content("내용")
-                .type(PostType.CAMPUS)
+                .type(FeedType.CAMPUS)
                 .user(student1.getUser())
                 .build();
 
@@ -298,7 +296,7 @@ class PostServiceTest {
         Post created = Post.builder()
                 .title("제목")
                 .content("내용")
-                .type(PostType.CAMPUS)
+                .type(FeedType.CAMPUS)
                 .user(student2.getUser())
                 .build();
 

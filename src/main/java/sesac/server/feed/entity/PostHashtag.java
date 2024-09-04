@@ -10,6 +10,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,11 +36,20 @@ public class PostHashtag {
     @JoinColumn(name = "notice_id", nullable = true)
     private Notice notice;
 
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hashtag_id")
     private Hashtag hashtag;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private FeedType type;
+    private ArticleType type;
+
+    @PrePersist
+    @PreUpdate
+    private void validatePostOrNotice() {
+        if ((post == null && notice == null) || (post != null && notice != null)) {
+            throw new IllegalStateException();
+        }
+    }
 }

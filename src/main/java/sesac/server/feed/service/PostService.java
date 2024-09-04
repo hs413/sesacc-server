@@ -10,17 +10,16 @@ import sesac.server.auth.dto.CustomPrincipal;
 import sesac.server.auth.exception.TokenErrorCode;
 import sesac.server.auth.exception.TokenException;
 import sesac.server.common.exception.BaseException;
-import sesac.server.feed.dto.CreatePostRequest;
-import sesac.server.feed.dto.PostListRequest;
-import sesac.server.feed.dto.PostListResponse;
-import sesac.server.feed.dto.PostResponse;
-import sesac.server.feed.dto.ReplyResponse;
-import sesac.server.feed.dto.UpdatePostRequest;
+import sesac.server.feed.dto.request.CreatePostRequest;
+import sesac.server.feed.dto.request.PostListRequest;
+import sesac.server.feed.dto.request.UpdatePostRequest;
+import sesac.server.feed.dto.response.PostListResponse;
+import sesac.server.feed.dto.response.PostResponse;
+import sesac.server.feed.entity.ArticleType;
 import sesac.server.feed.entity.FeedType;
 import sesac.server.feed.entity.Hashtag;
 import sesac.server.feed.entity.Post;
 import sesac.server.feed.entity.PostHashtag;
-import sesac.server.feed.entity.PostType;
 import sesac.server.feed.exception.PostErrorCode;
 import sesac.server.feed.repository.HashtagRepository;
 import sesac.server.feed.repository.PostHashtagRepository;
@@ -40,12 +39,12 @@ public class PostService {
     private final HashtagRepository hashtagRepository;
     private final PostHashtagRepository postHashtagRepository;
 
-    public Post createPost(Long userId, CreatePostRequest request) {
+    public Post createPost(Long userId, FeedType feedType, CreatePostRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new TokenException(TokenErrorCode.UNACCEPT));
 
         Post post = Post.builder()
-                .type(PostType.CAMPUS)
+                .type(feedType)
                 .title(request.title())
                 .content(request.content())
                 .user(user)
@@ -73,7 +72,7 @@ public class PostService {
                 .map(hashtag -> PostHashtag.builder()
                         .post(post)
                         .hashtag(hashtag)
-                        .type(FeedType.POST)
+                        .type(ArticleType.POST)
                         .build())
                 .toList();
 
@@ -86,19 +85,15 @@ public class PostService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new BaseException(PostErrorCode.NO_POST));
 
-        List<ReplyResponse> replies = post.getReplies().stream()
-                .map(ReplyResponse::new)
-                .toList();
-
-        return new PostResponse(post, replies);
+        return new PostResponse(post);
     }
 
     public List<PostListResponse> getPostList(
             Pageable pageable,
             PostListRequest request,
-            PostType type
+            FeedType feedType
     ) {
-        List<PostListResponse> posts = postRepository.searchPost(pageable, request, type);
+        List<PostListResponse> posts = postRepository.searchPost(pageable, request, feedType);
 
         return posts;
     }
@@ -130,4 +125,5 @@ public class PostService {
         return principal.role().equals(UserRole.MANAGER.toString()) ||
                 principal.id().equals(userId);
     }
+
 }

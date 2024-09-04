@@ -21,7 +21,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Formula;
 import sesac.server.common.entity.BaseEntity;
-import sesac.server.feed.dto.UpdateNoticeRequest;
+import sesac.server.feed.dto.request.UpdateNoticeRequest;
 import sesac.server.user.entity.User;
 
 
@@ -58,11 +58,21 @@ public class Notice extends BaseEntity {
 
     private Boolean status;
 
-    @Formula("(SELECT COUNT(*) FROM likes l WHERE l.post_id = id AND l.type = 'POST')")
+
+    @Formula("(SELECT COUNT(*) FROM likes l WHERE l.notice_id = id AND l.type = 'NOTICE')")
     private Long likesCount;
 
-    @Formula("(SELECT COUNT(*) FROM reply r WHERE r.post_id = id AND r.type = 'POST')")
+    @Formula("(SELECT COUNT(*) FROM reply r WHERE r.notice_id = id AND r.type = 'NOTICE')")
+
     private Long replyCount;
+
+    @OneToMany(mappedBy = "notice")
+    @Builder.Default
+    private List<Reply> replies = new ArrayList<>();
+
+    @OneToMany(mappedBy = "notice")
+    @Builder.Default
+    private List<Likes> likes = new ArrayList<>();
 
     @OneToMany(mappedBy = "notice")
     @Builder.Default
@@ -86,4 +96,5 @@ public class Notice extends BaseEntity {
         }
 
     }
+
 }

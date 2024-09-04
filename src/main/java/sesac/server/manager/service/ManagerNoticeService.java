@@ -6,30 +6,24 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Service;
 import sesac.server.auth.exception.TokenErrorCode;
 import sesac.server.auth.exception.TokenException;
 import sesac.server.common.exception.BaseException;
-import sesac.server.feed.dto.CreateNoticeRequest;
-import sesac.server.feed.dto.CreatePostRequest;
-import sesac.server.feed.dto.NoticeListRequest;
-import sesac.server.feed.dto.NoticeListResponse;
-import sesac.server.feed.dto.NoticeResponse;
-import sesac.server.feed.dto.PostListRequest;
-import sesac.server.feed.dto.UpdateNoticeRequest;
-import sesac.server.feed.entity.FeedType;
+import sesac.server.feed.dto.request.CreateNoticeRequest;
+import sesac.server.feed.dto.request.NoticeListRequest;
+import sesac.server.feed.dto.request.UpdateNoticeRequest;
+import sesac.server.feed.dto.response.NoticeListResponse;
+import sesac.server.feed.dto.response.NoticeResponse;
+import sesac.server.feed.entity.ArticleType;
 import sesac.server.feed.entity.Hashtag;
 import sesac.server.feed.entity.Notice;
 import sesac.server.feed.entity.NoticeType;
-import sesac.server.feed.entity.Post;
 import sesac.server.feed.entity.PostHashtag;
-import sesac.server.feed.entity.PostType;
 import sesac.server.feed.exception.PostErrorCode;
 import sesac.server.feed.repository.HashtagRepository;
 import sesac.server.feed.repository.NoticeRepository;
 import sesac.server.feed.repository.PostHashtagRepository;
-import sesac.server.feed.repository.PostRepository;
 import sesac.server.user.entity.User;
 import sesac.server.user.repository.UserRepository;
 
@@ -80,7 +74,7 @@ public class ManagerNoticeService {
                 .map(hashtag -> PostHashtag.builder()
                         .notice(notice)
                         .hashtag(hashtag)
-                        .type(FeedType.NOTICE)
+                        .type(ArticleType.NOTICE)
                         .build())
                 .toList();
 
