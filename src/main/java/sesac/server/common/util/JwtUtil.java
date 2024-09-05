@@ -29,7 +29,6 @@ public class JwtUtil {
         headers.put("typ", "JWT");
         headers.put("alg", "HS256");
 
-        // payload 부분 설정
         Map<String, Object> payloads = new HashMap<>(valueMap);
 
         // 테스트 시에는 짧은 유효 기간
