@@ -18,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import sesac.server.account.dto.request.SignupRequest;
 import sesac.server.account.exception.AccountErrorCode;
 import sesac.server.account.exception.AccountException;
+import sesac.server.account.service.AccountService;
 import sesac.server.campus.entity.Campus;
 import sesac.server.campus.entity.Course;
 import sesac.server.campus.repository.CourseRepository;
@@ -54,11 +55,14 @@ class AccountServiceTest {
 
         em.persist(campus);
 
+        LocalDate now = LocalDate.now();
         course = Course.builder()
                 .campus(campus)
                 .name("Course")
                 .classNumber("course number")
                 .instructorName("instructor name")
+                .startDate(now)
+                .endDate(now.plusMonths(1))
                 .build();
 
         em.persist(course);

@@ -51,12 +51,12 @@ public class Post extends BaseEntity {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private FeedType type;
+    private PostType type;
 
-    @Formula("(SELECT COUNT(*) FROM likes l WHERE l.post_id = id AND l.type = 'POST')")
+    @Formula("(SELECT COUNT(*) FROM likes l WHERE l.post_id = id)")
     private Long likesCount;
 
-    @Formula("(SELECT COUNT(*) FROM reply r WHERE r.post_id = id AND r.type = 'POST')")
+    @Formula("(SELECT COUNT(*) FROM reply r WHERE r.post_id = id)")
     private Long replyCount;
 
     @OneToMany(mappedBy = "post")

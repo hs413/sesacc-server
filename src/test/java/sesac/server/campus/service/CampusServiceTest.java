@@ -12,8 +12,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import sesac.server.campus.dto.CampusResponse;
+import sesac.server.campus.dto.response.CampusResponse;
 import sesac.server.campus.entity.Campus;
+import sesac.server.campus.service.CampusService;
 
 @Log4j2
 @SpringBootTest
