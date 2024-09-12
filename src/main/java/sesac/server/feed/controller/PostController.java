@@ -7,6 +7,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -44,7 +45,6 @@ public class PostController {
     private final PostService postService;
     private final LikesService likesService;
     private final ReplyService replyService;
-    private final BindingResultHandler bindingResultHandler;
 
     // -----------------------------------------------------------게시글 CRUD
     @GetMapping
@@ -61,12 +61,12 @@ public class PostController {
     @PostMapping
     public ResponseEntity<Void> createPost(
             @AuthPrincipal CustomPrincipal principal,
-            @Valid @RequestBody CreatePostRequest createPostRequest,
             @PathVariable PostType postType,
+            @Validated @RequestBody CreatePostRequest createPostRequest,
             BindingResult bindingResult
     ) {
 
-        bindingResultHandler.handleBindingResult(bindingResult, List.of(
+        BindingResultHandler.handle(bindingResult, List.of(
                 PostErrorCode.REQUIRED_TITLE,
                 PostErrorCode.INVALID_TITLE_SIZE,
                 PostErrorCode.REQUIRED_CONTENT,
@@ -95,7 +95,7 @@ public class PostController {
             @Valid @RequestBody UpdatePostRequest updatePostRequest,
             BindingResult bindingResult
     ) {
-        bindingResultHandler.handleBindingResult(bindingResult, List.of(
+        BindingResultHandler.handle(bindingResult, List.of(
                 PostErrorCode.INVALID_TITLE_SIZE,
                 PostErrorCode.INVALID_CONTENT_SIZE
         ));
@@ -165,7 +165,7 @@ public class PostController {
             @Valid @RequestBody ReplyRequest request,
             BindingResult bindingResult
     ) {
-        bindingResultHandler.handleBindingResult(bindingResult, List.of(
+        BindingResultHandler.handle(bindingResult, List.of(
                 ReplyErrorCode.REQUIRED_CONTENT,
                 ReplyErrorCode.INVALID_CONTENT_SIZE
         ));
@@ -182,7 +182,7 @@ public class PostController {
             @Valid @RequestBody ReplyRequest request,
             BindingResult bindingResult
     ) {
-        bindingResultHandler.handleBindingResult(bindingResult, List.of(
+        BindingResultHandler.handle(bindingResult, List.of(
                 ReplyErrorCode.REQUIRED_CONTENT,
                 ReplyErrorCode.INVALID_CONTENT_SIZE
         ));
