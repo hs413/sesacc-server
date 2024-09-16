@@ -9,6 +9,8 @@ import org.springframework.validation.BindingResult;
 @Component
 public class BindingResultHandler {
 
+    // TODO static 메서드로 사용
+    @Deprecated
     public void handleBindingResult(BindingResult bindingResult, List<ErrorCode> errorCodes) {
         if (!bindingResult.hasErrors()) {
             return;

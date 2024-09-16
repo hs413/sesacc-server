@@ -3,7 +3,6 @@ package sesac.server.feed.controller;
 import static sesac.server.feed.exception.PostErrorCode.INVALID_CONTENT_SIZE;
 import static sesac.server.feed.exception.PostErrorCode.INVALID_TITLE_SIZE;
 import static sesac.server.feed.exception.PostErrorCode.REQUIRED_CONTENT;
-import static sesac.server.feed.exception.PostErrorCode.REQUIRED_NOTICE_TYPE;
 import static sesac.server.feed.exception.PostErrorCode.REQUIRED_TITLE;
 
 import jakarta.validation.Valid;
@@ -12,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
@@ -27,11 +27,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import sesac.server.auth.dto.AuthPrincipal;
 import sesac.server.auth.dto.CustomPrincipal;
+import sesac.server.common.dto.PageResponse;
 import sesac.server.common.exception.BindingResultHandler;
 import sesac.server.feed.dto.request.CreateNoticeRequest;
 import sesac.server.feed.dto.request.NoticeListRequest;
 import sesac.server.feed.dto.request.ReplyRequest;
 import sesac.server.feed.dto.request.UpdateNoticeRequest;
+import sesac.server.feed.dto.response.ExtendedNoticeListResponse;
+import sesac.server.feed.dto.response.ImportantNoticeResponse;
 import sesac.server.feed.dto.response.NoticeListResponse;
 import sesac.server.feed.dto.response.NoticeResponse;
 import sesac.server.feed.dto.response.ReplyResponse;
@@ -57,18 +60,21 @@ public class NoticeController {
     @GetMapping
     public ResponseEntity<Page<NoticeListResponse>> getNoticeList(
             @PathVariable NoticeType noticeType,
-            Pageable pageable,
+            @PageableDefault(page = 0, size = 10) Pageable pageable,
             @ModelAttribute NoticeListRequest request
     ) {
         Page<NoticeListResponse> response = noticeService.getNoticeList(pageable, request,
-                request.type());
+                noticeType);
 
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("important")
-    public ResponseEntity<Void> getImportantNotices(@PathVariable NoticeType noticeType) {
-        return null;
+    public ResponseEntity<List<ImportantNoticeResponse>> getImportantNotices(
+            @PathVariable NoticeType noticeType) {
+        List<ImportantNoticeResponse> response = noticeService.getImportantNotices();
+
+        return ResponseEntity.ok().body(response);
     }
 
     @GetMapping("{noticeId}")
@@ -93,11 +99,10 @@ public class NoticeController {
                 REQUIRED_TITLE,
                 INVALID_TITLE_SIZE,
                 REQUIRED_CONTENT,
-                INVALID_CONTENT_SIZE,
-                REQUIRED_NOTICE_TYPE
+                INVALID_CONTENT_SIZE
         ));
 
-        noticeService.createNotice(principal.id(), request);
+        noticeService.createNotice(principal.id(), request, noticeType);
 
         return ResponseEntity.ok().build();
     }
@@ -206,5 +211,17 @@ public class NoticeController {
         replyService.deleteReply(principal, replyId);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/manager")
+    public ResponseEntity<PageResponse<ExtendedNoticeListResponse>> getExtendedNoticeList(
+            @PageableDefault(page = 0, size = 10) Pageable pageable,
+            @PathVariable NoticeType noticeType,
+            @ModelAttribute NoticeListRequest request
+    ) {
+        PageResponse<ExtendedNoticeListResponse> response =
+                noticeService.getExtendedNoticeList(pageable, request, noticeType);
+
+        return ResponseEntity.ok(response);
     }
 }

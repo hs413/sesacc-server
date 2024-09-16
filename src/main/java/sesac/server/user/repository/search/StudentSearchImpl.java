@@ -5,14 +5,10 @@ import static sesac.server.campus.entity.QCourse.course;
 import static sesac.server.user.entity.QStudent.student;
 import static sesac.server.user.entity.QUser.user;
 
-import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.EntityPathBase;
-import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -20,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.support.PageableExecutionUtils;
+import sesac.server.common.util.JPAQueryUtil;
 import sesac.server.user.dto.request.SearchStudentRequest;
 import sesac.server.user.dto.response.QSearchStudentResponse;
 import sesac.server.user.dto.response.SearchStudentResponse;
@@ -34,6 +31,7 @@ public class StudentSearchImpl implements StudentSearch {
 
     @Override
     public Page<SearchStudentResponse> searchStudent(
+            Long campusId,
             Pageable pageable,
             SearchStudentRequest request
     ) {
@@ -43,7 +41,7 @@ public class StudentSearchImpl implements StudentSearch {
                         student.id,
                         student.name,
                         user.email,
-                        campus.name,
+                        course.id,
                         course.name,
                         student.statusCode,
                         user.createdAt
@@ -53,8 +51,9 @@ public class StudentSearchImpl implements StudentSearch {
                 .join(student.firstCourse, course)
                 .join(course.campus, campus)
                 .where(
+                        campus.id.eq(campusId),
                         nameContains(request.name()),
-                        courseContains(request.course()),
+                        courseEq(request.courseId()),
                         statusEq(request.status())
                 )
                 .offset(pageable.getOffset())
@@ -65,8 +64,9 @@ public class StudentSearchImpl implements StudentSearch {
         JPAQuery<Student> countQuery = queryFactory
                 .select(student)
                 .where(
+                        student.firstCourse.campus.id.eq(campusId),
                         nameContains(request.name()),
-                        courseContains(request.course()),
+                        courseEq(request.courseId()),
                         statusEq(request.status())
                 )
                 .from(student);
@@ -83,33 +83,15 @@ public class StudentSearchImpl implements StudentSearch {
         return name != null ? student.name.contains(name) : null;
     }
 
-    private BooleanExpression courseContains(String course) {
-        return course != null ? student.firstCourse.name.contains(course) : null;
+    private BooleanExpression courseEq(Long courseId) {
+        return courseId != null ? student.firstCourse.id.eq(courseId) : null;
     }
 
     private OrderSpecifier<?>[] studentOrderBy(QStudent student, Sort sort) {
-        List<OrderSpecifier<?>> orderSpecifiers = getOrderSpecifiers(student, sort);
+        List<OrderSpecifier<?>> orderSpecifiers = JPAQueryUtil.getOrderSpecifiers(student, sort);
 
-        if (orderSpecifiers.isEmpty()) {
-            orderSpecifiers.add(student.id.desc());
-        }
+        orderSpecifiers.add(student.id.desc());
 
         return orderSpecifiers.toArray(OrderSpecifier[]::new);
     }
-
-    private List<OrderSpecifier<?>> getOrderSpecifiers(EntityPathBase<?> qType, Sort sort) {
-        List<OrderSpecifier<?>> orderSpecifiers = new ArrayList<>();
-
-        for (Sort.Order order : sort) {
-            PathBuilder entityPath = new PathBuilder<>(qType.getType(), qType.getMetadata());
-            OrderSpecifier orderSpecifier = new OrderSpecifier(
-                    order.isAscending() ? Order.ASC : Order.DESC,
-                    entityPath.get(order.getProperty())
-            );
-            orderSpecifiers.add(orderSpecifier);
-        }
-
-        return orderSpecifiers;
-    }
-
 }
