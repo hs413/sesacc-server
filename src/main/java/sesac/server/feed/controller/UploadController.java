@@ -21,10 +21,10 @@ import sesac.server.feed.dto.response.UploadResult;
 @RestController
 public class UploadController {
 
-    @Value("${file.upload-path}")
+    @Value("${upload-path}")
     private String uploadPath;
 
-    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public List<UploadResult> upload(UploadRequest request) {
 
         log.info(request);
