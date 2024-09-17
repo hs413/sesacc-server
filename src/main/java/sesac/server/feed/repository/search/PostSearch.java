@@ -1,11 +1,14 @@
 package sesac.server.feed.repository.search;
 
+import com.querydsl.core.Tuple;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import sesac.server.feed.dto.request.PostListRequest;
 import sesac.server.feed.dto.response.ExtendedPostListResponse;
 import sesac.server.feed.dto.response.PostListResponse;
+import sesac.server.feed.dto.response.PostPopularResponse;
+import sesac.server.feed.entity.Post;
 import sesac.server.feed.entity.PostType;
 
 public interface PostSearch {
@@ -17,4 +20,6 @@ public interface PostSearch {
 
     Page<ExtendedPostListResponse> searchExtendedPostPage(Pageable pageable,
             PostListRequest request, PostType type);
+
+    List<PostPopularResponse> popularPosts();
 }

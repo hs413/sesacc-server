@@ -1,5 +1,6 @@
 package sesac.server.feed.controller;
 
+import com.querydsl.core.Tuple;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -29,9 +30,11 @@ import sesac.server.feed.dto.request.ReplyRequest;
 import sesac.server.feed.dto.request.UpdatePostRequest;
 import sesac.server.feed.dto.response.ExtendedPostListResponse;
 import sesac.server.feed.dto.response.PostListResponse;
+import sesac.server.feed.dto.response.PostPopularResponse;
 import sesac.server.feed.dto.response.PostResponse;
 import sesac.server.feed.dto.response.ReplyResponse;
 import sesac.server.feed.entity.ArticleType;
+import sesac.server.feed.entity.Post;
 import sesac.server.feed.entity.PostType;
 import sesac.server.feed.exception.PostErrorCode;
 import sesac.server.feed.exception.ReplyErrorCode;
@@ -120,8 +123,10 @@ public class PostController {
     }
 
     @GetMapping("popular")
-    public ResponseEntity<Void> getPopularPostList(@PathVariable PostType postType) {
-        return null;
+    public ResponseEntity<List<PostPopularResponse>> getPopularPostList(
+            @PathVariable PostType postType) {
+        List<PostPopularResponse> response = postService.getPopularPostList();
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("search")
