@@ -150,6 +150,20 @@ public class UserService {
         return messageRepository.findBySenderId(userId, pageable);
     }
 
+    public MessageResponse getMessage(Long userId, Long messageId) {
+        Message message = messageRepository.findById(messageId)
+                .orElseThrow(() -> new BaseException(UserErrorCode.NO_MESSAGE));
+
+        if (!message.getReceiver().getId().equals(userId) &&
+                !message.getSender().getId().equals(userId)) {
+            throw new BaseException(UserErrorCode.NO_MESSAGE);
+        }
+
+        return new MessageResponse(message.getId(), message.getSender().getStudent().getNickname(),
+                message.getReceiver().getStudent().getNickname(), message.getContent(),
+                message.getIsRead(), message.getCreatedAt());
+    }
+
     public void deleteMessage(Long userId, Long messageId) {
         Message message = messageRepository.findById(messageId)
                 .orElseThrow(() -> new BaseException(UserErrorCode.NO_MESSAGE));

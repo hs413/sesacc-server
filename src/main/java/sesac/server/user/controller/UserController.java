@@ -102,8 +102,13 @@ public class UserController {
     }
 
     @GetMapping("messages/{messageId}")
-    public ResponseEntity<Void> getMessage(@PathVariable Long messageId) {
-        return null;
+    public ResponseEntity<MessageResponse> getMessage(
+            @AuthPrincipal CustomPrincipal user,
+            @PathVariable Long messageId
+    ) {
+        MessageResponse response = userService.getMessage(user.id(), messageId);
+
+        return ResponseEntity.ok().body(response);
     }
 
     @DeleteMapping("messages/{messageId}")
