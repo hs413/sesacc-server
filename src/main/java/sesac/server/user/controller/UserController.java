@@ -29,6 +29,7 @@ import sesac.server.user.dto.request.MessageSendRequest;
 import sesac.server.user.dto.request.SearchStudentRequest;
 import sesac.server.user.dto.request.UpdateStudentRequest;
 import sesac.server.user.dto.response.ManagerListResponse;
+import sesac.server.user.dto.response.MessageResponse;
 import sesac.server.user.dto.response.SearchStudentResponse;
 import sesac.server.user.dto.response.StudentDetailResponse;
 import sesac.server.user.dto.response.StudentListResponse;
@@ -68,13 +69,22 @@ public class UserController {
 
     // -----------------------------------------------------------쪽지
     @GetMapping("messages/received")
-    public ResponseEntity<Void> getReceivedMessageList() {
-        return null;
+    public ResponseEntity<List<MessageResponse>> getReceivedMessageList(
+            @AuthPrincipal CustomPrincipal user,
+            @PageableDefault Pageable pageable
+    ) {
+        List<MessageResponse> response = userService.receivedMessage(user.id(), pageable);
+        return ResponseEntity.ok().body(response);
     }
 
+
     @GetMapping("messages/sent")
-    public ResponseEntity<Void> getSentMessageList() {
-        return null;
+    public ResponseEntity<List<MessageResponse>> getSentMessageList(
+            @AuthPrincipal CustomPrincipal user,
+            @PageableDefault Pageable pageable
+    ) {
+        List<MessageResponse> response = userService.sentMessage(user.id(), pageable);
+        return ResponseEntity.ok().body(response);
     }
 
     @PostMapping("messages/{userId}")

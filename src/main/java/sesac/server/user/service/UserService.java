@@ -16,6 +16,7 @@ import sesac.server.user.dto.request.SearchStudentRequest;
 import sesac.server.user.dto.request.UpdateStudentRequest;
 import sesac.server.user.dto.response.ManagerListResponse;
 import sesac.server.user.dto.response.ManagerPageResponse;
+import sesac.server.user.dto.response.MessageResponse;
 import sesac.server.user.dto.response.SearchStudentResponse;
 import sesac.server.user.dto.response.StudentDetailResponse;
 import sesac.server.user.dto.response.StudentListResponse;
@@ -139,6 +140,14 @@ public class UserService {
         Message message = request.toEntity(sender, receiver);
 
         messageRepository.save(message);
+    }
+
+    public List<MessageResponse> receivedMessage(Long userId, Pageable pageable) {
+        return messageRepository.findByReceiverId(userId, pageable);
+    }
+
+    public List<MessageResponse> sentMessage(Long userId, Pageable pageable) {
+        return messageRepository.findBySenderId(userId, pageable);
     }
 
     public void deleteMessage(Long userId, Long messageId) {
