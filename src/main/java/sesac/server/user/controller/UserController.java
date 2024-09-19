@@ -97,8 +97,13 @@ public class UserController {
     }
 
     @DeleteMapping("messages/{messageId}")
-    public ResponseEntity<Void> deleteMessage(@PathVariable Long messageId) {
-        return null;
+    public ResponseEntity<Void> deleteMessage(
+            @AuthPrincipal CustomPrincipal receiver,
+            @PathVariable Long messageId
+    ) {
+        userService.deleteMessage(receiver.id(), messageId);
+
+        return ResponseEntity.ok().build();
     }
 
     // -----------------------------------------------------------프로필

@@ -140,4 +140,15 @@ public class UserService {
 
         messageRepository.save(message);
     }
+
+    public void deleteMessage(Long userId, Long messageId) {
+        Message message = messageRepository.findById(messageId)
+                .orElseThrow(() -> new BaseException(UserErrorCode.NO_MESSAGE));
+
+        if (!message.getReceiver().getId().equals(userId)) {
+            throw new BaseException(UserErrorCode.NO_MESSAGE);
+        }
+
+        messageRepository.delete(message);
+    }
 }
