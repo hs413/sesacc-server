@@ -5,7 +5,6 @@ import static sesac.server.feed.entity.QPost.post;
 import static sesac.server.user.entity.QStudent.student;
 import static sesac.server.user.entity.QUser.user;
 
-import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -17,10 +16,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import sesac.server.feed.dto.request.PostListRequest;
 import sesac.server.feed.dto.response.ExtendedPostListResponse;
+import sesac.server.feed.dto.response.PopularPostResponse;
 import sesac.server.feed.dto.response.PostListResponse;
-import sesac.server.feed.dto.response.PostPopularResponse;
 import sesac.server.feed.dto.response.QExtendedPostListResponse;
-import sesac.server.feed.dto.response.QPostPopularResponse;
+import sesac.server.feed.dto.response.QPopularPostResponse;
 import sesac.server.feed.entity.Post;
 import sesac.server.feed.entity.PostType;
 
@@ -109,10 +108,10 @@ public class PostSearchImpl implements PostSearch {
     }
 
     @Override
-    public List<PostPopularResponse> popularPosts() {
+    public List<PopularPostResponse> popularPosts() {
         LocalDateTime now = LocalDateTime.now();
-        List<PostPopularResponse> posts = queryFactory
-                .select(new QPostPopularResponse(
+        List<PopularPostResponse> posts = queryFactory
+                .select(new QPopularPostResponse(
                         post.id,
                         post.title
                 ))

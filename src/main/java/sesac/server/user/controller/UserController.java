@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import sesac.server.auth.dto.AuthPrincipal;
 import sesac.server.auth.dto.CustomPrincipal;
@@ -94,7 +93,7 @@ public class UserController {
             @Valid @RequestBody MessageSendRequest request,
             BindingResult bindingResult
     ) {
-        BindingResultHandler.handle(bindingResult, List.of(UserErrorCode.NO_USER));
+        BindingResultHandler.handle(bindingResult, List.of(UserErrorCode.REQUIRED_MESSAGE));
 
         userService.sendMessage(sender.id(), userId, request);
 

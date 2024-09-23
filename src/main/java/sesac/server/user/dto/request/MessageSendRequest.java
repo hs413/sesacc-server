@@ -5,7 +5,7 @@ import sesac.server.user.entity.Message;
 import sesac.server.user.entity.User;
 
 public record MessageSendRequest(
-        @NotBlank String content
+        @NotBlank(message = "REQUIRED_MESSAGE") String content
 ) {
 
     public Message toEntity(User sender, User receiver) {

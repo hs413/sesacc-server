@@ -1,6 +1,5 @@
 package sesac.server.feed.service;
 
-import com.querydsl.core.Tuple;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +15,8 @@ import sesac.server.feed.dto.request.CreatePostRequest;
 import sesac.server.feed.dto.request.PostListRequest;
 import sesac.server.feed.dto.request.UpdatePostRequest;
 import sesac.server.feed.dto.response.ExtendedPostListResponse;
+import sesac.server.feed.dto.response.PopularPostResponse;
 import sesac.server.feed.dto.response.PostListResponse;
-import sesac.server.feed.dto.response.PostPopularResponse;
 import sesac.server.feed.dto.response.PostResponse;
 import sesac.server.feed.entity.Hashtag;
 import sesac.server.feed.entity.Post;
@@ -140,7 +139,7 @@ public class PostService {
         return new PageResponse(response);
     }
 
-    public List<PostPopularResponse> getPopularPostList() {
+    public List<PopularPostResponse> getPopularPostList() {
         return postRepository.popularPosts();
     }
 }
